@@ -67,7 +67,6 @@ class OVRSystem
      */
     //  @@todo should be able to pick which one; DKv1 or DKv2 or one of
     //  many attached DK's
-    OculusHMD *getOculusHMD(OpenGLContext *glContext, Skeleton *skeleton, PhysicalNode *parent);
     OculusHMD *getDisplay(OpenGLContext *glContext, Skeleton *skeleton, PhysicalNode *parent);
     //  @@todo Tracker independent of the display?
     //  @@todo Controller devices?

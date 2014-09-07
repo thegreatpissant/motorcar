@@ -121,6 +121,7 @@ int main(int argc, char *argv[])
 
     int result = compositor->start();
 
+    delete hmd;
     delete sixense;
     delete scene;
 

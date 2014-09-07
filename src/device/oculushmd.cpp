@@ -201,8 +201,8 @@ void OculusHMD::prepareForDraw()
 {
     
     ovrSensorState ss = ovrHmd_GetSensorState( m_hmd, 0.0 );
-    ovrQuatf qf = ss.Predicted.Pose.Orientation;
-    OVR::Quatf quatf( qf.x, qf.y, qf.z, qf.w); 
+    OVR::Quatf quatf = ss.Predicted.Pose.Orientation;
+    //std::cout << "Quatf data (x,y,z,w): (" << quatf.x << "," << quatf.y << "," << quatf.z << "," << quatf.w << ")\n";
 
     OVR::Vector3f OVRaxis;
     float angle;
