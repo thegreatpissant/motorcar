@@ -3,7 +3,7 @@ CC=g++
 
 #LIBOVRPATH=${MOTORCAR_DIR}/../thirdPartySource/Oculus/OculusSDK/LibOVR
 OCULUS_INCLUDES= -I${LIBOVRPATH}/Include -I${LIBOVRPATH}/Src
-OCULUS_LIBS= -L${LIBOVRPATH}/Lib/Linux/Release/x86_64 -lovr  
+OCULUS_LIBS= -L${LIBOVRPATH}/Lib/Linux/Release/x86_64 -lovr -ludev -lXxf86vm -lXrandr
 
 
 #SIXENSEPATH=${MOTORCAR_DIR}/../thirdPartySource/sixenseSDK_linux_OSX
