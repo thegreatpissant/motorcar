@@ -45,9 +45,9 @@
 int main(int argc, char *argv[])
 {
 #ifdef GL_EXT_frag_depth
-    std::cout << "depth extension available" << std::endl
+    std::cout << "depth extension available" << std::endl;
 #endif
-        motorcar::Scene *scene = new motorcar::Scene();
+    motorcar::Scene *scene = new motorcar::Scene();
 
     motorcar::Compositor *compositor = motorcar::Compositor::createCompositor(argc, argv, scene);
     scene->setCompositor(compositor);
@@ -57,8 +57,9 @@ int main(int argc, char *argv[])
     motorcar::OpenGLContext *context = compositor->getContext();
 
     motorcar::Skeleton *skeleton = new motorcar::Skeleton(scene);
-    motorcar::OVRSystem ovrSystem;
 
+    //  Use OVRSystem to get Oculus type devices
+    motorcar::OVRSystem ovrSystem;
     motorcar::OculusHMD *hmd = ovrSystem.getDisplay(context, skeleton, scene);
 
     if (hmd) {
@@ -116,14 +117,15 @@ int main(int argc, char *argv[])
         //        compositor->display()->setParentNode(headController);
         //        compositor->display()->setTransform(glm::translate(glm::mat4(1), glm::vec3(0,-0.25, 0)));
     }
-
     std::cout << "Starting Compositor " << std::endl;
 
     int result = compositor->start();
 
-    delete hmd;
     delete sixense;
     delete scene;
+
+    //  Shutdown everything
+    ovrSystem.shutdown();     
 
     return result;
 }

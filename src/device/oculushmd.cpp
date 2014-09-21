@@ -43,12 +43,27 @@ OVRSystem::OVRSystem()
 {
     //  @@todo make a singleton
     ovr_Initialize();
+    initialized = true;
 }
-OVRSystem::~OVRSystem()
+
+OVRSystem::~OVRSystem() { shutdown(); };
+
+void OVRSystem::shutdown()
 {
-    // @@todo deallocate all devices
+    std::cout << "OVRSystem Shutdown()" << std::endl;
+
+    if (!initialized)
+        return;
+
+    for (auto i = 0; i < hmdDisplays.size(); i++) {
+        ovrHmd_Destroy(hmdDisplays[i]);
+    }
+
+    //  Shutdown OVR
     ovr_Shutdown();
-};
+
+    initialized = false;
+}
 
 OculusHMD *OVRSystem::getDisplay(OpenGLContext *glContext, Skeleton *skeleton, PhysicalNode *parent)
 {
@@ -61,6 +76,7 @@ OculusHMD *OVRSystem::getDisplay(OpenGLContext *glContext, Skeleton *skeleton, P
         std::cout << "Could not enumerate Oculus HMD Device" << std::endl;
         return nullptr;
     }
+    hmdDisplays.push_back(hmd);
 
     //  @@todo This is going away in next SDK release
     ovrHmdDesc hmdDesc;
@@ -106,8 +122,9 @@ OculusHMD *OVRSystem::getDisplay(OpenGLContext *glContext, Skeleton *skeleton, P
     float h_meters = HScreenSize / 4.0f - LensSeparationDistance / 2.0f;
     float h = (4.0f * h_meters) / HScreenSize;
 
-    OculusHMD * display = new OculusHMD(hmd, glContext, skeleton, parent, scaleFactor, DistortionK, glm::vec2(HScreenSize, VScreenSize),
-                              glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, EyeToScreenDistance)));
+    OculusHMD *display =
+        new OculusHMD(hmd, glContext, skeleton, parent, scaleFactor, DistortionK, glm::vec2(HScreenSize, VScreenSize),
+                      glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, EyeToScreenDistance)));
 
     ViewPoint *lCam =
         new ViewPoint(near, far, display, display,
@@ -176,33 +193,32 @@ void OnMessage(const Message &msg)
     }
 }
 
-
-bool OVRSystem::SupportsMessageType(MessageType mt) const
-{
-    return true;
-}
+bool OVRSystem::SupportsMessageType(MessageType mt) const { return true; }
 #endif
 
 /**
  * OculusHMD
  */
 OculusHMD::OculusHMD(ovrHmd hmd, OpenGLContext *glContext, Skeleton *skeleton, PhysicalNode *parent, float scale,
-          glm::vec4 distortionK, glm::vec2 displayDimensions, const glm::mat4 &transform)
+                     glm::vec4 distortionK, glm::vec2 displayDimensions, const glm::mat4 &transform)
     : m_hmd(hmd), RenderToTextureDisplay(scale, distortionK, glContext, displayDimensions, parent, transform),
       m_boneTracker(new SingleBoneTracker(skeleton->headBone(), glm::mat4(), skeleton, parent))
 {
 }
 
-OculusHMD::~OculusHMD()
-{
-}
+OculusHMD::~OculusHMD() { ovrHmd_Destroy(m_hmd); }
 
 void OculusHMD::prepareForDraw()
 {
+    OVR::Quatf quatf;
     
-    ovrSensorState ss = ovrHmd_GetSensorState( m_hmd, 0.0 );
-    OVR::Quatf quatf = ss.Predicted.Pose.Orientation;
-    //std::cout << "Quatf data (x,y,z,w): (" << quatf.x << "," << quatf.y << "," << quatf.z << "," << quatf.w << ")\n";
+    ovrFrameTiming frameTiming = ovrHmd_BeginFrameTiming (m_hmd, 0);
+    //  @@todo is midpoint the correct one to use here
+    ovrSensorState ss = ovrHmd_GetSensorState(m_hmd, frameTiming.ScanoutMidpointSeconds);
+    if (ss.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
+        quatf = ss.Predicted.Pose.Orientation;
+        //std::cout << "Quatf data (x,y,z,w): (" << quatf.x << "," << quatf.y << "," << quatf.z << "," << quatf.w << ")\n";
+    }
 
     OVR::Vector3f OVRaxis;
     float angle;
@@ -215,5 +231,9 @@ void OculusHMD::prepareForDraw()
     glm::vec3 parentPos = glm::vec3(parentNode()->worldTransform() * glm::vec4(0, 0, 0, 1));
 
     m_boneTracker->setOrientation(glm::mat3_cast(orientation));
+
+    RenderToTextureDisplay::prepareForDraw();
+
+    ovrHmd_EndFrameTiming(m_hmd);
 }
 

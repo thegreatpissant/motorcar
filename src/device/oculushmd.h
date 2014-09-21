@@ -42,6 +42,8 @@
 #include <Kernel/OVR_Math.h>
 #include <glm/gtc/quaternion.hpp>
 
+#include <vector>
+
 namespace motorcar
 {
 
@@ -79,6 +81,13 @@ class OVRSystem
      * Disconnects, Connects, User out of range
      * May have to integrate with dbus or something
      */
+
+    //  Release all devices and shutdown OVR system
+    void shutdown ();
+
+    private:
+        std::vector <ovrHmd> hmdDisplays;
+        bool initialized {false}; 
 };
 
 //  The Oculus HMD class
