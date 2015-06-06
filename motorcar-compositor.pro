@@ -27,7 +27,7 @@ INCLUDEPATH += $$MOTORCAR_PROTOCOL_PATH
 HEADERS += $$MOTORCAR_PROTOCOL_PATH/motorcar-server-protocol.h
 SOURCES += $$MOTORCAR_PROTOCOL_PATH/motorcar-wayland-extensions.c
 
-DESTDIR = /usr/lib64/
+DESTDIR = motorcar-compositor 
 OBJECTS_DIR = lib/.obj
 MOC_DIR = lib/.moc
 RCC_DIR = lib/.rcc
@@ -49,10 +49,10 @@ INCLUDEPATH += $$QTWAYLANDSOURCEPATH/include
 #RESOURCES += motorcar-compositor.qrc
 
 #target.path = $$[QT_INSTALL_EXAMPLES]/qtwayland/motorcar-compositor
-target.path = $DESTDIR/motorcar-compositor
+target.path = $DESTDIR
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS motorcar-compositor.pro
 #sources.path = $$[QT_INSTALL_EXAMPLES]/qtwayland/motorcar-compositor
-sources.path = $DESTDIR/motorcar-compositor
+sources.path = $DESTDIR
 INSTALLS += target sources
 
 INCLUDEPATH += src/compositor
