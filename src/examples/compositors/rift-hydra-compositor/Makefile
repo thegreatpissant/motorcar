@@ -19,7 +19,7 @@ SIXENSE_LIBS= -L${SIXENSEPATH}/lib/linux_x64/release -lsixense_utils_x64 -lsixen
 
 
 INCLUDES= -I${MOTORCAR_DIR}/src/compositor -I${MOTORCAR_DIR}/src/protocol -I${MOTORCAR_DIR}/src/device ${OCULUS_INCLUDES} ${SIXENSE_INCLUDES}
-LIBS= -L${MOTORCAR_DIR}/motorcar-compositor -ludev -lpthread -lGL -lX11 -lXinerama
+LIBS= -L${MOTORCAR_DIR}/motorcar-compositor -lmotorcar-compositor -ludev -lpthread -lGL -lX11 -lXinerama
 CFLAGS=-std=c++11 
 objects=oculushmd.o sixensemotionsensingsystem.o sixensecontrollernode.o sixensebasenode.o 
 
