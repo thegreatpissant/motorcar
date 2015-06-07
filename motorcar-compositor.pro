@@ -49,10 +49,10 @@ INCLUDEPATH += $$QTWAYLANDSOURCEPATH/include
 #RESOURCES += motorcar-compositor.qrc
 
 #target.path = $$[QT_INSTALL_EXAMPLES]/qtwayland/motorcar-compositor
-target.path = $$[DESTDIR]
+target.path = $DESTDIR
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS motorcar-compositor.pro
 #sources.path = $$[QT_INSTALL_EXAMPLES]/qtwayland/motorcar-compositor
-sources.path = $$[DESTDIR]
+sources.path = $DESTDIR
 INSTALLS += target sources
 
 INCLUDEPATH += src/compositor
